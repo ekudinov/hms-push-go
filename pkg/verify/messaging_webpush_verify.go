@@ -19,8 +19,8 @@ package verify
 import (
 	"errors"
 
-	"pushkit-go-sample/push/constant"
-	"pushkit-go-sample/push/model"
+	"github.com/ekudinov/hms-push-go/pkg/constant"
+	"github.com/ekudinov/hms-push-go/pkg/model"
 )
 
 func validateWebPushConfig(webPushConfig *model.WebPushConfig) error {

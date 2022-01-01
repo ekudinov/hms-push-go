@@ -22,9 +22,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"pushkit-go-sample/push/config"
 
-	"pushkit-go-sample/httpclient"
+	"github.com/ekudinov/hms-push-go/pkg/config"
+
+	"github.com/ekudinov/hms-push-go/pkg/httpclient"
 )
 
 type AuthClient struct {

@@ -22,10 +22,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"pushkit-go-sample/httpclient"
-	"pushkit-go-sample/push/constant"
-	"pushkit-go-sample/push/model"
-	"pushkit-go-sample/push/verify"
+	"github.com/ekudinov/hms-push-go/pkg/constant"
+	"github.com/ekudinov/hms-push-go/pkg/httpclient"
+	"github.com/ekudinov/hms-push-go/pkg/model"
+	"github.com/ekudinov/hms-push-go/pkg/verify"
 )
 
 // SendMessage sends a message to huawei cloud common
