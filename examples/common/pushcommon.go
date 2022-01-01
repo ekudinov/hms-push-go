@@ -12,15 +12,16 @@ Copyright 2020. Huawei Technologies Co., Ltd. All rights reserved.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+*/
 
 package common
 
 import (
 	"fmt"
-	"pushkit-go-sample/push/config"
-	"pushkit-go-sample/push/core"
 	"sync"
+
+	"github.com/ekudinov/hms-push-go/pkg/config"
+	"github.com/ekudinov/hms-push-go/pkg/core"
 )
 
 const (
@@ -31,9 +32,9 @@ const (
 
 	// below is public address
 	// get token address
-	authUrl   = "https://login.cloud.huawei.com/oauth2/v2/token"
+	authUrl = "https://login.cloud.huawei.com/oauth2/v2/token"
 	// send push msg address
-	pushUrl   = "https://api.push.hicloud.com"
+	pushUrl = "https://api.push.hicloud.com"
 )
 
 var conf = &config.Config{
@@ -75,6 +76,6 @@ func GetPushClient() *core.HttpPushClient {
 	return pushClient
 }
 
-func GetPushConf() *config.Config{
+func GetPushConf() *config.Config {
 	return conf
 }
