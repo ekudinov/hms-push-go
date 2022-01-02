@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/ekudinov/hms-push-go/pkg/config"
 
@@ -33,6 +34,11 @@ type AuthClient struct {
 	appId     string
 	appSecret string
 	client    *httpclient.HTTPClient
+}
+
+type Token struct {
+	Value     string
+	ExpiredAt time.Time
 }
 
 type TokenMsg struct {
@@ -70,9 +76,9 @@ func NewAuthClient(conf *config.Config) (*AuthClient, error) {
 
 // GetAuthToken gets token from huawei cloud
 // the developer can access the app by using this token
-func (ac *AuthClient) GetAuthToken(ctx context.Context) (string, error) {
+func (ac *AuthClient) GetAuthToken(ctx context.Context) (*Token, error) {
 	if ac.appId == "" || ac.appSecret == "" {
-		return "", errors.New("appId or appSecret is null")
+		return nil, errors.New("appId or appSecret is null")
 	}
 	body := fmt.Sprintf("grant_type=client_credentials&client_secret=%s&client_id=%s", ac.appSecret, ac.appId)
 
@@ -84,17 +90,22 @@ func (ac *AuthClient) GetAuthToken(ctx context.Context) (string, error) {
 	}
 
 	resp, err := ac.client.DoHttpRequest(ctx, request)
+
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	var token TokenMsg
 	if resp.Status == 200 {
 		err = json.Unmarshal(resp.Body, &token)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		return token.AccessToken, nil
+		return &Token{
+			Value:     token.AccessToken,
+			ExpiredAt: time.Now().Add(time.Duration(token.ExpiresIn) * time.Second),
+		}, nil
 	}
-	return "", nil
+
+	return nil, errors.New("Get auth token request response status != 200 and body:" + string(resp.Body))
 }

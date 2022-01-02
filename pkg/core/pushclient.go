@@ -33,7 +33,7 @@ import (
 type HttpPushClient struct {
 	endpoint   string
 	appId      string
-	token      string
+	token      *auth.Token
 	authClient *auth.AuthClient
 	client     *httpclient.HTTPClient
 }
@@ -61,7 +61,7 @@ func NewHttpClient(c *config.Config) (*HttpPushClient, error) {
 
 	token, err := authClient.GetAuthToken(context.Background())
 	if err != nil {
-		return nil, errors.New("refresh token fail")
+		return nil, errors.New("refresh token fail:" + err.Error())
 	}
 
 	return &HttpPushClient{
@@ -73,7 +73,7 @@ func NewHttpClient(c *config.Config) (*HttpPushClient, error) {
 	}, nil
 }
 
-func (c *HttpPushClient) refreshToken() error {
+func (c *HttpPushClient) RefreshToken() error {
 	if c.authClient == nil {
 		return errors.New("can't refresh token because getting auth client fail")
 	}
@@ -90,7 +90,7 @@ func (c *HttpPushClient) refreshToken() error {
 func (c *HttpPushClient) resetHTTPHeader(request *httpclient.PushRequest) *httpclient.PushRequest {
 	request.Header = []httpclient.HTTPOption{
 		httpclient.SetHeader("Content-Type", "application/json;charset=utf-8"),
-		httpclient.SetHeader("Authorization", "Bearer "+c.token),
+		httpclient.SetHeader("Authorization", "Bearer "+c.token.Value),
 	}
 	return request
 }
@@ -137,7 +137,7 @@ func (c *HttpPushClient) isNeedRetry(responsePointer interface{}) (bool, error) 
 		return false, nil
 	}
 
-	err = c.refreshToken()
+	err = c.RefreshToken()
 	if err != nil {
 		return false, err
 	}
@@ -172,4 +172,8 @@ func checkParamStructPtr(structPtr interface{}) (reflect.Value, reflect.Type, bo
 		return reflect.Value{}, nil, false
 	}
 	return val, t, true
+}
+
+func (c *HttpPushClient) GetToken() auth.Token {
+	return *c.token
 }

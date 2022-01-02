@@ -63,7 +63,7 @@ func (c *HttpPushClient) getSendMsgRequest(msgRequest *model.MessageRequest) (*h
 		Body:   body,
 		Header: []httpclient.HTTPOption{
 			httpclient.SetHeader("Content-Type", "application/json;charset=utf-8"),
-			httpclient.SetHeader("Authorization", "Bearer "+c.token),
+			httpclient.SetHeader("Authorization", "Bearer "+c.token.Value),
 		},
 	}
 	return request, nil
